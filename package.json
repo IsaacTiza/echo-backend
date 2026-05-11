@@ -1,0 +1,12 @@
+{
+  "name": "echo-backend",
+  "version": "1.0.0",
+  "description": "The Backend for the Echo App",
+  "license": "ISC",
+  "author": "Isaac Tiza",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "npm run nodemon src/server.js"
+  }
+}
