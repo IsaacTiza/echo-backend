@@ -43,11 +43,10 @@ const noteSchema = new mongoose.Schema(
 );
 
 // Ensure either content or fileUrl is present before saving
-noteSchema.pre("save", function (next) {
+noteSchema.pre("save", async function () {
   if (!this.content && !this.fileUrl) {
-    return next(new Error("Note must have either content or a file URL"));
+    throw new Error("Note must have either content or a file URL");
   }
-  next();
 });
 
 // Instance method to check if note has been explained already
