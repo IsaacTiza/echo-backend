@@ -42,12 +42,15 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: "/api/auth/facebook/callback",
+      callbackURL: `${process.env.BACKEND_URL}/api/auth/facebook/callback`,
       profileFields: ["id", "displayName", "photos"],
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        let user = await User.findOne({ providerId: profile.id, provider: "facebook" });
+        let user = await User.findOne({
+          providerId: profile.id,
+          provider: "facebook",
+        });
 
         if (!user) {
           user = await User.create({
@@ -63,8 +66,8 @@ passport.use(
       } catch (error) {
         return done(error, null);
       }
-    }
-  )
+    },
+  ),
 );
 
 export default passport;
