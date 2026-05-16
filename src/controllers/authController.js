@@ -10,9 +10,9 @@ const issueToken = (user) => {
 const sendTokenCookie = (res, token) => {
   res.cookie("token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+    secure: true, // must be true when sameSite is none
+    sameSite: "none", // ← allows cross-origin cookie attachment
+    maxAge: 30 * 24 * 60 * 60 * 1000,
   });
 };
 
