@@ -129,25 +129,23 @@ export const getNote = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
 export const deleteNote = async (req, res) => {
   try {
-    const note = await Note.findOne({
-      _id: req.params.id,
-      userId: req.user._id,
-    });
+    const note = await Note.findOne({ _id: req.params.id, userId: req.user._id });
 
     if (!note) {
       return res.status(404).json({ message: "Note not found" });
     }
 
     if (note.fileUrl) {
-      const publicId = note.fileUrl
-        .split("/")
-        .slice(-2)
-        .join("/")
-        .split(".")[0];
-      await cloudinary.uploader.destroy(publicId, { resource_type: "auto" });
+      try {
+        const urlParts = note.fileUrl.split("/");
+        const folderAndFile = urlParts.slice(-2).join("/");
+        const publicId = folderAndFile.split(".")[0];
+        await cloudinary.uploader.destroy(publicId, { resource_type: "auto" });
+      } catch (cloudinaryError) {
+        console.error("Cloudinary delete error:", cloudinaryError);
+      }
     }
 
     await note.deleteOne();
@@ -155,4 +153,4 @@ export const deleteNote = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
-};
+};  

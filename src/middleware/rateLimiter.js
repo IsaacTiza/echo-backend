@@ -1,4 +1,4 @@
-const DAILY_LIMIT = 10;
+const DAILY_LIMIT = 100;
 
 const rateLimiter = async (req, res, next) => {
   try {
