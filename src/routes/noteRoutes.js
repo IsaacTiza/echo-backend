@@ -6,6 +6,7 @@ import {
   getNotes,
   getNote,
   deleteNote,
+  downloadNote
 } from "../controllers/noteController.js";
 
 const router = express.Router();
@@ -14,5 +15,5 @@ router.get("/", protect, getNotes);
 router.get("/:id", protect, getNote);
 router.post("/", protect, upload.single("file"), createNote);
 router.delete("/:id", protect, deleteNote);
-
+router.get("/:id/download", protect, downloadNote);
 export default router;

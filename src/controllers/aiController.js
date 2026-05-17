@@ -4,7 +4,7 @@ import {
   generateQuizPrompt,
   generateFlashcardsPrompt,
   explainFailedTopicsPrompt,
-} from "../utils/gemini.js";
+} from "../utils/ai.js";
 
 export const explainNote = async (req, res) => {
   try {
@@ -12,15 +12,11 @@ export const explainNote = async (req, res) => {
       _id: req.params.noteId,
       userId: req.user._id,
     });
-
-    if (!note) {
-      return res.status(404).json({ message: "Note not found" });
-    }
+    if (!note) return res.status(404).json({ message: "Note not found" });
 
     const tone = req.body.tone || note.tone || "simple";
-    const explanation = await explainNotePrompt(note, tone);
+    const explanation = await explainNotePrompt(note, tone, req.user.email);
 
-    // Only increment after success
     await req.incrementUsage();
 
     note.explanation = explanation;
@@ -39,15 +35,11 @@ export const generateQuiz = async (req, res) => {
       _id: req.params.noteId,
       userId: req.user._id,
     });
-
-    if (!note) {
-      return res.status(404).json({ message: "Note not found" });
-    }
+    if (!note) return res.status(404).json({ message: "Note not found" });
 
     const count = req.body.count || 12;
-    const quiz = await generateQuizPrompt(note, count);
+    const quiz = await generateQuizPrompt(note, count, req.user.email);
 
-    // Only increment after success
     await req.incrementUsage();
 
     res.status(200).json({ quiz });
@@ -62,14 +54,10 @@ export const generateFlashcards = async (req, res) => {
       _id: req.params.noteId,
       userId: req.user._id,
     });
+    if (!note) return res.status(404).json({ message: "Note not found" });
 
-    if (!note) {
-      return res.status(404).json({ message: "Note not found" });
-    }
+    const flashcards = await generateFlashcardsPrompt(note, req.user.email);
 
-    const flashcards = await generateFlashcardsPrompt(note);
-
-    // Only increment after success
     await req.incrementUsage();
 
     res.status(200).json({ flashcards });
@@ -84,20 +72,19 @@ export const explainFailedTopics = async (req, res) => {
       _id: req.params.noteId,
       userId: req.user._id,
     });
-
-    if (!note) {
-      return res.status(404).json({ message: "Note not found" });
-    }
+    if (!note) return res.status(404).json({ message: "Note not found" });
 
     const { failedTopics } = req.body;
-
     if (!failedTopics || failedTopics.length === 0) {
       return res.status(400).json({ message: "No failed topics provided" });
     }
 
-    const explanation = await explainFailedTopicsPrompt(note, failedTopics);
+    const explanation = await explainFailedTopicsPrompt(
+      note,
+      failedTopics,
+      req.user.email,
+    );
 
-    // Only increment after success
     await req.incrementUsage();
 
     res.status(200).json({ explanation });

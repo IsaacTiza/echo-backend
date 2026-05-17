@@ -144,3 +144,35 @@ export const deleteNote = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };  
+export const downloadNote = async (req, res) => {
+  try {
+    const note = await Note.findOne({
+      _id: req.params.id,
+      userId: req.user._id,
+    });
+
+    if (!note) {
+      return res.status(404).json({ message: "Note not found" });
+    }
+
+    // For text notes with no file
+    if (note.type === "text" && !note.fileUrl) {
+      const content = note.content || "";
+      res.setHeader("Content-Type", "text/plain");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${note.title}.txt"`,
+      );
+      return res.send(content);
+    }
+
+    // For file notes redirect to Cloudinary URL
+    if (note.fileUrl) {
+      return res.redirect(note.fileUrl);
+    }
+
+    res.status(400).json({ message: "No downloadable content found" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
