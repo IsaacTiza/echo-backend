@@ -20,7 +20,9 @@ export const explainNote = async (req, res) => {
     const tone = req.body.tone || note.tone || "simple";
     const explanation = await explainNotePrompt(note, tone);
 
-    // Save explanation and tone to note
+    // Only increment after success
+    await req.incrementUsage();
+
     note.explanation = explanation;
     note.tone = tone;
     await note.save();
@@ -45,6 +47,9 @@ export const generateQuiz = async (req, res) => {
     const count = req.body.count || 12;
     const quiz = await generateQuizPrompt(note, count);
 
+    // Only increment after success
+    await req.incrementUsage();
+
     res.status(200).json({ quiz });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -63,6 +68,9 @@ export const generateFlashcards = async (req, res) => {
     }
 
     const flashcards = await generateFlashcardsPrompt(note);
+
+    // Only increment after success
+    await req.incrementUsage();
 
     res.status(200).json({ flashcards });
   } catch (error) {
@@ -88,6 +96,9 @@ export const explainFailedTopics = async (req, res) => {
     }
 
     const explanation = await explainFailedTopicsPrompt(note, failedTopics);
+
+    // Only increment after success
+    await req.incrementUsage();
 
     res.status(200).json({ explanation });
   } catch (error) {

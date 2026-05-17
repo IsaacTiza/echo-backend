@@ -16,9 +16,11 @@ const rateLimiter = async (req, res, next) => {
       });
     }
 
-    // Increment usage
-    user.dailyUsage += 1;
-    await user.save();
+    // Attach increment function to req instead of incrementing immediately
+    req.incrementUsage = async () => {
+      user.dailyUsage += 1;
+      await user.save();
+    };
 
     next();
   } catch (error) {
