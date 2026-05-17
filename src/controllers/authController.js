@@ -19,8 +19,8 @@ const sendTokenCookie = (res, token) => {
 export const googleCallback = (req, res) => {
   try {
     const token = issueToken(req.user);
-    sendTokenCookie(res, token);
-    res.redirect(`${process.env.CLIENT_URL}/dashboard`);
+    // Don't set cookie. Pass token to frontend via URL.
+    res.redirect(`${process.env.CLIENT_URL}/dashboard?token=${token}`);
   } catch (error) {
     res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
   }
@@ -29,8 +29,8 @@ export const googleCallback = (req, res) => {
 export const facebookCallback = (req, res) => {
   try {
     const token = issueToken(req.user);
-    sendTokenCookie(res, token);
-    res.redirect(`${process.env.CLIENT_URL}/dashboard`);
+    // Don't set cookie. Pass token to frontend via URL.
+    res.redirect(`${process.env.CLIENT_URL}/dashboard?token=${token}`);
   } catch (error) {
     res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
   }
