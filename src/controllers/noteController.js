@@ -18,8 +18,15 @@ const extractTextFromFile = async (file) => {
     mime ===
     "application/vnd.openxmlformats-officedocument.presentationml.presentation"
   ) {
-    return await officeParser.parseOfficeAsync(file.buffer, {
-      outputErrorToConsole: true,
+    return await new Promise((resolve, reject) => {
+      officeParser.parseOffice(
+        file.buffer,
+        (data, err) => {
+          if (err) reject(err);
+          else resolve(data);
+        },
+        { outputErrorToConsole: false },
+      );
     });
   }
 
