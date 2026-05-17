@@ -25,6 +25,10 @@ const noteSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    originalFilename: {
+      type: String,
+      default: "",
+    },
     tags: {
       type: [String],
       default: [],

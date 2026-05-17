@@ -76,15 +76,16 @@ export const createNote = async (req, res) => {
       type = "text";
     }
 
-    const note = await Note.create({
-      userId: req.user._id,
-      title,
-      type,
-      content,
-      fileUrl,
-      tags: tags ? JSON.parse(tags) : [],
-      tone: tone || "simple",
-    });
+   const note = await Note.create({
+     userId: req.user._id,
+     title,
+     type,
+     content,
+     fileUrl,
+     originalFilename: req.file ? req.file.originalname : "",
+     tags: tags ? JSON.parse(tags) : [],
+     tone: tone || "simple",
+   });
 
     res.status(201).json({ note });
   } catch (error) {
