@@ -156,20 +156,37 @@ export const downloadNote = async (req, res) => {
       return res.status(404).json({ message: "Note not found" });
     }
 
-    // For text notes with no file
-    if (note.type === "text" && !note.fileUrl) {
-      const content = note.content || "";
+    if (note.fileUrl) {
+      const response = await fetch(note.fileUrl);
+      const buffer = await response.arrayBuffer();
+
+      const extMap = {
+        pdf: "application/pdf",
+        image: "image/jpeg",
+        docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        txt: "text/plain",
+      };
+
+      const mimeType = extMap[note.type] || "application/octet-stream";
+      const filename = note.originalFilename || `${note.title}`;
+
+      res.setHeader("Content-Type", mimeType);
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${filename}"`,
+      );
+      res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+      return res.send(Buffer.from(buffer));
+    }
+
+    if (note.type === "text" && note.content) {
       res.setHeader("Content-Type", "text/plain");
       res.setHeader(
         "Content-Disposition",
         `attachment; filename="${note.title}.txt"`,
       );
-      return res.send(content);
-    }
-
-    // For file notes redirect to Cloudinary URL
-    if (note.fileUrl) {
-      return res.redirect(note.fileUrl);
+      res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+      return res.send(note.content);
     }
 
     res.status(400).json({ message: "No downloadable content found" });
