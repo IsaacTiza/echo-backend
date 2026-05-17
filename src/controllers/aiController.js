@@ -4,7 +4,7 @@ import {
   generateQuizPrompt,
   generateFlashcardsPrompt,
   explainFailedTopicsPrompt,
-} from "../utils/ai.js";
+} from "../utils/gemini.js";
 
 export const explainNote = async (req, res) => {
   try {
