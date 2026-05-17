@@ -1,6 +1,7 @@
 import Note from "../models/Note.js";
 import cloudinary from "../config/cloudinary.js";
 import mammoth from "mammoth";
+// import officeParser from "officeparser";
 import officeParser from "officeparser";
 
 const extractTextFromFile = async (file) => {
@@ -19,14 +20,10 @@ const extractTextFromFile = async (file) => {
     "application/vnd.openxmlformats-officedocument.presentationml.presentation"
   ) {
     return await new Promise((resolve, reject) => {
-      officeParser.parseOffice(
-        file.buffer,
-        (data, err) => {
-          if (err) reject(err);
-          else resolve(data);
-        },
-        { outputErrorToConsole: false },
-      );
+      officeParser.parseOffice(file.buffer, (data, err) => {
+        if (err) reject(err);
+        else resolve(data);
+      });
     });
   }
 
