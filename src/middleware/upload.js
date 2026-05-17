@@ -9,7 +9,7 @@ const fileFilter = (req, file, cb) => {
     "image/webp",
     "application/pdf",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // docx
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation", // pptx
+    // "application/vnd.openxmlformats-officedocument.presentationml.presentation", // pptx
     "text/plain", // txt
   ];
 
@@ -17,7 +17,7 @@ const fileFilter = (req, file, cb) => {
     cb(null, true);
   } else {
     cb(
-      new Error("Only images, PDF, DOCX, PPTX and TXT files are allowed"),
+      new Error("Only images, PDF, DOCX,and TXT files are allowed"),
       false,
     );
   }

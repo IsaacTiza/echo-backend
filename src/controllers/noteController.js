@@ -2,7 +2,7 @@ import Note from "../models/Note.js";
 import cloudinary from "../config/cloudinary.js";
 import mammoth from "mammoth";
 // import officeParser from "officeparser";
-import officeParser from "officeparser";
+// import officeParser from "officeparser";
 
 const extractTextFromFile = async (file) => {
   const mime = file.mimetype;
@@ -13,18 +13,6 @@ const extractTextFromFile = async (file) => {
   ) {
     const result = await mammoth.extractRawText({ buffer: file.buffer });
     return result.value;
-  }
-
-  if (
-    mime ===
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-  ) {
-    return await new Promise((resolve, reject) => {
-      officeParser.parseOffice(file.buffer, (data, err) => {
-        if (err) reject(err);
-        else resolve(data);
-      });
-    });
   }
 
   if (mime === "text/plain") {
@@ -42,8 +30,6 @@ const getFileType = (mime) => {
     "image/webp": "image",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
       "docx",
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-      "pptx",
     "text/plain": "txt",
   };
   return map[mime] || "text";
