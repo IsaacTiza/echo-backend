@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 const toneInstructions = {
   simple:
@@ -14,7 +14,7 @@ const toneInstructions = {
   academic:
     "Explain in a formal academic tone with proper terminology and structure.",
   bullet:
-    "Explain using clear bullet points and short sentences. Be concise and organized.",
+    "Explain using clear bullet points and short sentences. Be concise and organized.", 
 };
 
 const getNoteContent = async (note) => {
